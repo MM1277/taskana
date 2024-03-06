@@ -2234,9 +2234,7 @@ public class TaskQueryImpl implements TaskQuery {
 
   private void checkOpenReadAndReadTasksPermissionForSpecifiedWorkbaskets() {
     if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
-      }
+      LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
       return;
     }
     try {

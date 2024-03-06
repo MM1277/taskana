@@ -159,9 +159,7 @@ public class UserServiceImpl implements UserService {
           userMapper.deleteGroups(id);
           userMapper.deletePermissions(id);
         });
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
-    }
+    LOGGER.debug("Method deleteUser() deleted User with id '{}'.", id);
   }
 
   private Set<String> determineDomains(User user) {
