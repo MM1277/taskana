@@ -31,9 +31,7 @@ public class BeforeRequestReviewManager {
   }
 
   public Task beforeRequestReview(Task task) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending Task to BeforeRequestReviewProvider service providers: {}", task);
-    }
+    LOGGER.debug("Sending Task to BeforeRequestReviewProvider service providers: {}", task);
     for (BeforeRequestReviewProvider serviceProvider : beforeRequestReviewProviders) {
       try {
         task = serviceProvider.beforeRequestReview(task);

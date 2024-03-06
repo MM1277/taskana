@@ -27,9 +27,7 @@ public class TaskEndstatePreprocessorManager {
   }
 
   public Task processTaskBeforeEndstate(Task taskToProcess) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending task to TaskEndstatePreprocessor providers: {}", taskToProcess);
-    }
+    LOGGER.debug("Sending task to TaskEndstatePreprocessor providers: {}", taskToProcess);
     taskEndstatePreprocessors.forEach(
         wrap(
             taskEndstatePreprocessor ->
