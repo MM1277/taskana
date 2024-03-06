@@ -95,9 +95,7 @@ public class DbSchemaCreator {
             expectedMinVersion);
         return false;
       } else {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Schema version is valid.");
-        }
+        LOGGER.debug("Schema version is valid.");
         return true;
       }
 
@@ -144,9 +142,7 @@ public class DbSchemaCreator {
       }
       return false;
     }
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Schema does exist.");
-    }
+    LOGGER.debug("Schema does exist.");
     return true;
   }
 

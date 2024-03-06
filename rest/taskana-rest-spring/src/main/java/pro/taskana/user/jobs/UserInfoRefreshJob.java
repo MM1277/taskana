@@ -99,13 +99,9 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
     users.forEach(
         user -> {
           try {
-            if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug("Trying to insert user {}", user);
-            }
+            LOGGER.debug("Trying to insert user {}", user);
             taskanaEngineImpl.getUserService().createUser(user);
-            if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug("Successfully inserted user {}", user);
-            }
+            LOGGER.debug("Successfully inserted user {}", user);
           } catch (InvalidArgumentException
               | NotAuthorizedException
               | UserAlreadyExistException e) {
@@ -122,13 +118,9 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
 
             String userData = taskanaEngineImpl.getUserService().getUser(user.getId()).getData();
             if (userData != null) {
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Trying to set userData {} for user {}", userData, user);
-              }
+              LOGGER.debug("Trying to set userData {} for user {}", userData, user);
               user.setData(userData);
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Successfully set userData {} for user {}", userData, user);
-              }
+              LOGGER.debug("Successfully set userData {} for user {}", userData, user);
             }
           } catch (UserNotFoundException e) {
             if (LOGGER.isDebugEnabled()) {
@@ -139,9 +131,7 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
                       user.getId()));
             }
           } catch (InvalidArgumentException e) {
-            if (LOGGER.isDebugEnabled()) {
-              LOGGER.debug("Failed to fetch configuration data because userId was NULL or empty");
-            }
+            LOGGER.debug("Failed to fetch configuration data because userId was NULL or empty");
           }
         });
   }

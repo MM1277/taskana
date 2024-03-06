@@ -192,9 +192,7 @@ public class HistoryCleanupJob extends AbstractTaskanaJob {
 
     simpleHistoryService.deleteHistoryEventsByTaskIds(taskIdsToDeleteHistoryEventsFor);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("{} events deleted.", deletedTasksCount);
-    }
+    LOGGER.debug("{} events deleted.", deletedTasksCount);
 
     return deletedTasksCount;
   }

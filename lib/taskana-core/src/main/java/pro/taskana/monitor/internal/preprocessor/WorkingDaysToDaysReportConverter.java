@@ -64,9 +64,7 @@ public class WorkingDaysToDaysReportConverter {
       WorkingTimeCalculator workingTimeCalculator,
       Instant referenceDate)
       throws InvalidArgumentException {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Initialize WorkingDaysToDaysConverter with columnHeaders: {}", columnHeaders);
-    }
+    LOGGER.debug("Initialize WorkingDaysToDaysConverter with columnHeaders: {}", columnHeaders);
 
     if (workingTimeCalculator == null) {
       throw new InvalidArgumentException("WorkingDaysToDaysConverter can't be null");

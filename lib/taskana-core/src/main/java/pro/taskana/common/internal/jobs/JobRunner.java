@@ -64,9 +64,7 @@ public class JobRunner {
     String owner = hostAddress + " - " + Thread.currentThread().getName();
     job.setLockedBy(owner);
     ScheduledJob lockedJob = jobService.lockJob(job, owner);
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Locked job: {}", lockedJob);
-    }
+    LOGGER.debug("Locked job: {}", lockedJob);
     return lockedJob;
   }
 
