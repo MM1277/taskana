@@ -31,9 +31,7 @@ public class AfterRequestReviewManager {
   }
 
   public Task afterRequestReview(Task task) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending Task to AfterRequestReviewProvider service providers: {}", task);
-    }
+    LOGGER.debug("Sending Task to AfterRequestReviewProvider service providers: {}", task);
     for (AfterRequestReviewProvider serviceProvider : afterRequestReviewProviders) {
       try {
         task = serviceProvider.afterRequestReview(task);
