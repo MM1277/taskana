@@ -40,12 +40,10 @@ public class ObjectReferenceHandler {
         ObjectReferenceImpl.validate(objectReferenceImpl, "ObjectReference", "Task");
         try {
           objectReferenceMapper.insert(objectReferenceImpl);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "TaskService.createTask() for TaskId={} INSERTED an object reference={}.",
-                task.getId(),
-                objectReference);
-          }
+          LOGGER.debug(
+              "TaskService.createTask() for TaskId={} INSERTED an object reference={}.",
+              task.getId(),
+              objectReference);
         } catch (PersistenceException e) {
           throw new ObjectReferencePersistenceException(objectReference.getId(), task.getId(), e);
         }
@@ -125,12 +123,10 @@ public class ObjectReferenceHandler {
           o -> {
             if (!newObjRefIds.contains(o.getId())) {
               objectReferenceMapper.delete(o.getId());
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
-                    "TaskService.updateTask() for TaskId={} DELETED an ObjectReference={}.",
-                    newTaskImpl.getId(),
-                    o);
-              }
+              LOGGER.debug(
+                  "TaskService.updateTask() for TaskId={} DELETED an ObjectReference={}.",
+                  newTaskImpl.getId(),
+                  o);
             }
           });
     }
