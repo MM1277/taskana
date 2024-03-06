@@ -28,9 +28,7 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
       throws IOException, ServletException {
     Optional<Authentication> authentication = getCurrentAuthentication();
     if (authentication.isPresent()) {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Authentication found in Spring security context: {}", authentication);
-      }
+      LOGGER.debug("Authentication found in Spring security context: {}", authentication);
       obtainSubject()
           .ifPresent(
               subject -> {
@@ -38,10 +36,8 @@ public class SpringSecurityToJaasFilter extends GenericFilterBean {
                 initializeGroupPrincipalsFromAuthentication(authentication.get(), subject);
               });
     } else {
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "No authentication found in Spring security context. Continuing unauthenticatic.");
-      }
+      LOGGER.debug(
+          "No authentication found in Spring security context. Continuing unauthenticatic.");
     }
 
     chain.doFilter(request, response);
