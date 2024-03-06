@@ -76,12 +76,10 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.update(taskCommentImplToUpdate);
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug(
-              "Method updateTaskComment() updated taskComment '{}' for user '{}'.",
-              taskCommentImplToUpdate.getId(),
-              userId);
-        }
+        LOGGER.debug(
+            "Method updateTaskComment() updated taskComment '{}' for user '{}'.",
+            taskCommentImplToUpdate.getId(),
+            userId);
 
       } else {
         throw new NotAuthorizedOnTaskCommentException(userId, taskCommentImplToUpdate.getId());
@@ -138,9 +136,7 @@ class TaskCommentServiceImpl {
 
         taskCommentMapper.delete(taskCommentId);
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
-        }
+        LOGGER.debug("taskComment {} deleted", taskCommentToDelete.getId());
 
       } else {
         throw new NotAuthorizedOnTaskCommentException(userId, taskCommentToDelete.getId());

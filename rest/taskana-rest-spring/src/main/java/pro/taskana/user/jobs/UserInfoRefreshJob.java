@@ -82,15 +82,11 @@ public class UserInfoRefreshJob extends AbstractTaskanaJob {
 
     sqlConnectionRunner.runWithConnection(
         connection -> {
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Trying to delete all users, groups and permissions");
-          }
+          LOGGER.debug("Trying to delete all users, groups and permissions");
           String sql = "DELETE FROM USER_INFO; DELETE FROM GROUP_INFO; DELETE FROM PERMISSION_INFO";
           PreparedStatement statement = connection.prepareStatement(sql);
           statement.execute();
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Successfully deleted all users, groups and permissions");
-          }
+          LOGGER.debug("Successfully deleted all users, groups and permissions");
 
           if (!connection.getAutoCommit()) {
             connection.commit();

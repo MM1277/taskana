@@ -68,12 +68,10 @@ public class AttachmentHandler {
 
         try {
           attachmentMapper.insert(attachmentImpl);
-          if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                "TaskService.createTask() for TaskId={} INSERTED an Attachment={}.",
-                task.getId(),
-                attachmentImpl);
-          }
+          LOGGER.debug(
+              "TaskService.createTask() for TaskId={} INSERTED an Attachment={}.",
+              task.getId(),
+              attachmentImpl);
         } catch (PersistenceException e) {
           throw new AttachmentPersistenceException(attachmentImpl.getId(), task.getId(), e);
         }
@@ -133,12 +131,10 @@ public class AttachmentHandler {
           a -> {
             if (!newAttIds.contains(a.getId())) {
               attachmentMapper.delete(a.getId());
-              if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(
-                    "TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
-                    newTaskImpl.getId(),
-                    a);
-              }
+              LOGGER.debug(
+                  "TaskService.updateTask() for TaskId={} DELETED an Attachment={}.",
+                  newTaskImpl.getId(),
+                  a);
             }
           });
     }
@@ -150,12 +146,10 @@ public class AttachmentHandler {
 
     try {
       attachmentMapper.insert(attachmentImpl);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
-            newTaskImpl.getId(),
-            attachmentImpl);
-      }
+      LOGGER.debug(
+          "TaskService.updateTask() for TaskId={} INSERTED an Attachment={}.",
+          newTaskImpl.getId(),
+          attachmentImpl);
     } catch (PersistenceException e) {
       throw new AttachmentPersistenceException(attachmentImpl.getId(), newTaskImpl.getId(), e);
     }

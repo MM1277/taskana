@@ -138,12 +138,10 @@ public class ObjectReferenceHandler {
     ObjectReferenceImpl objectReferenceImpl = (ObjectReferenceImpl) objectReference;
     try {
       objectReferenceMapper.insert(objectReferenceImpl);
-      if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug(
-            "TaskService.updateTask() for TaskId={} INSERTED an ObjectReference={}.",
-            newTaskImpl.getId(),
-            objectReferenceImpl);
-      }
+      LOGGER.debug(
+          "TaskService.updateTask() for TaskId={} INSERTED an ObjectReference={}.",
+          newTaskImpl.getId(),
+          objectReferenceImpl);
     } catch (PersistenceException e) {
       throw new ObjectReferencePersistenceException(
           objectReferenceImpl.getId(), newTaskImpl.getId(), e);
