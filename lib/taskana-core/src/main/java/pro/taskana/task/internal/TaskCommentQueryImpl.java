@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.taskana.common.api.BaseQuery.SortDirection;
 import pro.taskana.common.api.TaskanaRole;
 import pro.taskana.common.api.TimeInterval;
 import pro.taskana.common.internal.InternalTaskanaEngine;
@@ -297,9 +298,7 @@ public class TaskCommentQueryImpl implements TaskCommentQuery {
 
     if (taskIdIn != null) {
       if (taskanaEngine.getEngine().isUserInRole(TaskanaRole.ADMIN, TaskanaRole.TASK_ADMIN)) {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
-        }
+        LOGGER.debug("Skipping permissions check since user is in role ADMIN or TASK_ADMIN.");
         return;
       }
 
