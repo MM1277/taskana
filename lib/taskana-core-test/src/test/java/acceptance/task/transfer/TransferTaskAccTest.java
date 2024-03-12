@@ -61,6 +61,10 @@ class TransferTaskAccTest {
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
   Task task1;
+  Task task2;
+  Task task3;
+  Task task4;
+  Task task5;
   ClassificationSummary defaultClassificationSummary;
   WorkbasketSummary defaultWorkbasketSummary;
   ObjectReference defaultObjectReference;
@@ -97,6 +101,16 @@ class TransferTaskAccTest {
             .owner(null)
             .markedForDeletion(false)
             .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary2 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("USER-1-1")
+            .domain("DOMAIN_A")
+            .description("Gruppenpostkorb KSC 2")
+            .name("Gruppenpostkorb KSC 2")
+            .type(WorkbasketType.PERSONAL)
+            .owner(null)
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
         .workbasketId(defaultWorkbasketSummary.getId())
@@ -106,6 +120,7 @@ class TransferTaskAccTest {
         .permission(WorkbasketPermission.READTASKS)
         .permission(WorkbasketPermission.APPEND)
         .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
         .buildAndStore(workbasketService);
     task1 =
         TaskBuilder.newTask()
@@ -131,11 +146,38 @@ class TransferTaskAccTest {
             .classificationSummary(defaultClassificationSummary)
             .workbasketSummary(defaultWorkbasketSummary)
             .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
-            .state(TaskState.COMPLETED)
+            .buildAndStore(taskService);
+    task2 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY_FOR_REVIEW)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task3 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task4 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY_FOR_REVIEW)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task5 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary)
+            .primaryObjRef(defaultTestObjectReference().build())
             .buildAndStore(taskService);
   }
 
-  @pro.taskana.testapi.security.WithAccessId(user = "admin", groups = GROUP_1_DN)
+  @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketIdIsProvided() throws Exception {
     Task task = task1;
@@ -156,10 +198,10 @@ class TransferTaskAccTest {
   Stream<DynamicTest> should_SetStateCorrectly_When_TransferringSingleTask() {
     List<Pair<String, TaskState>> testCases =
         List.of(
-            Pair.of("TKI:100000000000000000000000000000000025", TaskState.READY_FOR_REVIEW),
-            Pair.of("TKI:000000000000000000000000000000000025", TaskState.READY),
-            Pair.of("TKI:200000000000000000000000000000000025", TaskState.READY_FOR_REVIEW),
-            Pair.of("TKI:000000000000000000000000000000000026", TaskState.READY));
+            Pair.of(task2.getId(), TaskState.READY_FOR_REVIEW),
+            Pair.of(task3.getId(), TaskState.READY),
+            Pair.of(task4.getId(), TaskState.READY_FOR_REVIEW),
+            Pair.of(task5.getId(), TaskState.READY));
 
     ThrowingConsumer<Pair<String, TaskState>> test =
         p -> {
