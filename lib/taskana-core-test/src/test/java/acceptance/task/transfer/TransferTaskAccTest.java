@@ -60,13 +60,33 @@ class TransferTaskAccTest {
   @TaskanaInject TaskanaEngine taskanaEngine;
   @TaskanaInject ClassificationService classificationService;
   @TaskanaInject WorkbasketService workbasketService;
-  Task task1;
-  Task task2;
-  Task task3;
-  Task task4;
-  Task task5;
+  Task task003;
+  Task task025;
+  Task task125;
+  Task task225;
+  Task task026;
+  Task task00;
+  Task task001;
+  Task task207;
+  Task task002;
+  Task task106;
+  Task task004;
+  Task task005;
+  Task task006;
+  Task task041;
+  Task task208;
+  Task task023;
+  Task task024;
   ClassificationSummary defaultClassificationSummary;
-  WorkbasketSummary defaultWorkbasketSummary;
+  WorkbasketSummary defaultWorkbasketSummary6;
+  WorkbasketSummary defaultWorkbasketSummary7;
+  WorkbasketSummary defaultWorkbasketSummary12;
+  WorkbasketSummary defaultWorkbasketSummary5;
+  WorkbasketSummary defaultWorkbasketSummary1;
+  WorkbasketSummary defaultWorkbasketSummary8;
+  WorkbasketSummary defaultWorkbasketSummary10;
+  WorkbasketSummary defaultWorkbasketSummary4;
+  WorkbasketSummary defaultWorkbasketSummary15;
   ObjectReference defaultObjectReference;
   public static final String GROUP_1_DN =
       "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
@@ -91,29 +111,110 @@ class TransferTaskAccTest {
     defaultClassificationSummary =
         defaultTestClassification().buildAndStoreAsSummary(classificationService);
     defaultObjectReference = defaultTestObjectReference().build();
-    defaultWorkbasketSummary =
-        WorkbasketBuilder.newWorkbasket()
-            .key("GPK_KSC")
-            .domain("DOMAIN_A")
-            .description("Gruppenpostkorb KSC 2")
-            .name("Gruppenpostkorb KSC 2")
-            .type(WorkbasketType.GROUP)
-            .owner(null)
-            .markedForDeletion(false)
-            .buildAndStoreAsSummary(workbasketService);
-    defaultWorkbasketSummary2 =
+    defaultWorkbasketSummary6 =
         WorkbasketBuilder.newWorkbasket()
             .key("USER-1-1")
+            .name("PPK User 1 KSC 1")
             .domain("DOMAIN_A")
-            .description("Gruppenpostkorb KSC 2")
-            .name("Gruppenpostkorb KSC 2")
             .type(WorkbasketType.PERSONAL)
-            .owner(null)
+            .description("PPK User 1 KSC 1")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary7 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("USER-1-2")
+            .name("PPK User 2 KSC 1")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.PERSONAL)
+            .description("PPK User 2 KSC 1")
+            .owner("user-1-2")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary12 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("GPK_B_KSC_1")
+            .name("Gruppenpostkorb KSC B1")
+            .domain("DOMAIN_B")
+            .type(WorkbasketType.GROUP)
+            .description("Gruppenpostkorb KSC 1")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary5 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("TEAMLEAD-2")
+            .name("PPK Teamlead KSC 2")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.PERSONAL)
+            .description("PPK Teamlead KSC 2")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary1 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("GPK_KSC")
+            .name("Gruppenpostkorb KSC")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.GROUP)
+            .description("Gruppenpostkorb KSC")
+            .owner("teamlead-1")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary8 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("USER-2-1")
+            .name("PPK User 1 KSC 2")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.PERSONAL)
+            .description("PPK User 1 KSC 2")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary10 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("TPK_VIP")
+            .name("Themenpostkorb VIP")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.TOPIC)
+            .description("Themenpostkorb VIP")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary4 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("TEAMLEAD-1")
+            .name("PPK Teamlead KSC 1")
+            .domain("DOMAIN_A")
+            .type(WorkbasketType.PERSONAL)
+            .description("PPK Teamlead KSC 1")
+            .owner("")
+            .markedForDeletion(false)
+            .buildAndStoreAsSummary(workbasketService);
+    defaultWorkbasketSummary15 =
+        WorkbasketBuilder.newWorkbasket()
+            .key("USER-B-2")
+            .name("PPK User 2 KSC 1 Domain B")
+            .domain("DOMAIN_B")
+            .type(WorkbasketType.PERSONAL)
+            .description("PPK User 2 KSC 1 Domain B")
+            .owner("user-1-2")
             .markedForDeletion(false)
             .buildAndStoreAsSummary(workbasketService);
 
     WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
-        .workbasketId(defaultWorkbasketSummary.getId())
+        .workbasketId(defaultWorkbasketSummary6.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary6.getId())
         .accessId("teamlead-1")
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
@@ -122,57 +223,234 @@ class TransferTaskAccTest {
         .permission(WorkbasketPermission.TRANSFER)
         .permission(WorkbasketPermission.EDITTASKS)
         .buildAndStore(workbasketService);
-    task1 =
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary1.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary12.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary10.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary12.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary5.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary4.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.APPEND)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary8.getId())
+        .accessId("user-1-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.READ)
+        .permission(WorkbasketPermission.READTASKS)
+        .permission(WorkbasketPermission.TRANSFER)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    WorkbasketAccessItemBuilder.newWorkbasketAccessItem()
+        .workbasketId(defaultWorkbasketSummary8.getId())
+        .accessId("teamlead-1")
+        .permission(WorkbasketPermission.OPEN)
+        .permission(WorkbasketPermission.EDITTASKS)
+        .buildAndStore(workbasketService);
+
+    task003 =
         TaskBuilder.newTask()
-            .externalId("ETI:000000000000000000000000000000000003")
+            .created(created)
             .claimed(null)
             .completed(null)
-            .created(created)
             .modified(created)
-            .due(due)
-            .planned(due)
             .received(null)
+            .planned(due)
+            .due(due)
             .name("Widerruf")
-            .businessProcessId("PI_0000000000003")
-            .transferred(false)
+            .description("Widerruf")
             .note(null)
             .priority(2)
             .manualPriority(-1)
-            .callbackInfo(null)
-            .callbackState(CallbackState.valueOf("NONE"))
+            .state(TaskState.READY)
+            .businessProcessId("PI_0000000000003")
             .owner(null)
             .read(false)
-            .state(TaskState.READY)
+            .transferred(false)
+            .callbackInfo(null)
+            .callbackState(CallbackState.valueOf("NONE"))
             .classificationSummary(defaultClassificationSummary)
-            .workbasketSummary(defaultWorkbasketSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
             .primaryObjRef(DefaultTestEntities.defaultTestObjectReference().build())
             .buildAndStore(taskService);
-    task2 =
+    task125 =
         TaskBuilder.newTask()
             .state(TaskState.READY_FOR_REVIEW)
             .classificationSummary(defaultClassificationSummary)
-            .workbasketSummary(defaultWorkbasketSummary)
+            .workbasketSummary(defaultWorkbasketSummary7)
             .primaryObjRef(defaultTestObjectReference().build())
             .buildAndStore(taskService);
-    task3 =
+    task025 =
         TaskBuilder.newTask()
             .state(TaskState.READY)
             .classificationSummary(defaultClassificationSummary)
-            .workbasketSummary(defaultWorkbasketSummary)
+            .workbasketSummary(defaultWorkbasketSummary7)
             .primaryObjRef(defaultTestObjectReference().build())
             .buildAndStore(taskService);
-    task4 =
+    task225 =
         TaskBuilder.newTask()
             .state(TaskState.READY_FOR_REVIEW)
             .classificationSummary(defaultClassificationSummary)
-            .workbasketSummary(defaultWorkbasketSummary)
+            .workbasketSummary(defaultWorkbasketSummary7)
             .primaryObjRef(defaultTestObjectReference().build())
             .buildAndStore(taskService);
-    task5 =
+    task026 =
         TaskBuilder.newTask()
             .state(TaskState.READY)
             .classificationSummary(defaultClassificationSummary)
-            .workbasketSummary(defaultWorkbasketSummary)
+            .workbasketSummary(defaultWorkbasketSummary7)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task00 =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary6)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+
+    task001 =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary6)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+
+    task207 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary5)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+
+    task002 =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary6)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+
+    task106 =
+        TaskBuilder.newTask()
+            .state(TaskState.COMPLETED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary4)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task004 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task005 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task006 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task041 =
+        TaskBuilder.newTask()
+            .state(TaskState.CLAIMED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary15)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task208 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary10)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task106 =
+        TaskBuilder.newTask()
+            .state(TaskState.COMPLETED)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary4)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task023 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
+            .primaryObjRef(defaultTestObjectReference().build())
+            .buildAndStore(taskService);
+    task024 =
+        TaskBuilder.newTask()
+            .state(TaskState.READY)
+            .classificationSummary(defaultClassificationSummary)
+            .workbasketSummary(defaultWorkbasketSummary1)
             .primaryObjRef(defaultTestObjectReference().build())
             .buildAndStore(taskService);
   }
@@ -180,11 +458,11 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketIdIsProvided() throws Exception {
-    Task task = task1;
+    Task task = task003;
     taskService.claim(task.getId());
     taskService.setTaskRead(task.getId(), true);
 
-    taskService.transfer(task.getId(), defaultWorkbasketSummary.getId());
+    taskService.transfer(task.getId(), defaultWorkbasketSummary6.getId());
 
     Task transferredTask = taskService.getTask(task.getId());
     assertThat(transferredTask).isNotNull();
@@ -198,19 +476,19 @@ class TransferTaskAccTest {
   Stream<DynamicTest> should_SetStateCorrectly_When_TransferringSingleTask() {
     List<Pair<String, TaskState>> testCases =
         List.of(
-            Pair.of(task2.getId(), TaskState.READY_FOR_REVIEW),
-            Pair.of(task3.getId(), TaskState.READY),
-            Pair.of(task4.getId(), TaskState.READY_FOR_REVIEW),
-            Pair.of(task5.getId(), TaskState.READY));
+            Pair.of(task125.getId(), TaskState.READY_FOR_REVIEW),
+            Pair.of(task025.getId(), TaskState.READY),
+            Pair.of(task225.getId(), TaskState.READY_FOR_REVIEW),
+            Pair.of(task026.getId(), TaskState.READY));
 
     ThrowingConsumer<Pair<String, TaskState>> test =
         p -> {
           String taskId = p.getLeft();
           TaskState expectedState = p.getRight();
-          taskService.transfer(taskId, "WBI:100000000000000000000000000000000006");
+          taskService.transfer(taskId, defaultWorkbasketSummary6.getId());
           Task result = taskService.getTask(taskId);
           assertThat(result.getState()).isEqualTo(expectedState);
-          taskService.transfer(taskId, "WBI:100000000000000000000000000000000007");
+          taskService.transfer(taskId, defaultWorkbasketSummary7.getId());
         };
 
     return DynamicTest.stream(
@@ -220,14 +498,14 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "admin")
   @Test
   void should_SetStateCorrectly_When_BulkTranferringTasks() throws Exception {
-    String readyForReview = "TKI:100000000000000000000000000000000025";
-    String ready = "TKI:000000000000000000000000000000000025";
-    String inReview = "TKI:200000000000000000000000000000000025";
-    String claimed = "TKI:000000000000000000000000000000000026";
+    String readyForReview = task125.getId();
+    String ready = task025.getId();
+    String inReview = task225.getId();
+    String claimed = task026.getId();
     List<String> taskIds = List.of(readyForReview, ready, inReview, claimed);
 
     BulkOperationResults<String, TaskanaException> results =
-        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+        taskService.transferTasks(defaultWorkbasketSummary6.getId(), taskIds);
 
     assertThat(results.containsErrors()).isFalse();
     assertThat(taskService.getTask(readyForReview).getState())
@@ -243,13 +521,13 @@ class TransferTaskAccTest {
   @TestTemplate
   void should_TransferTask_When_NoExplicitPermissionsButUserIsInAdministrativeRole()
       throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task task = taskService.getTask(task003.getId());
     taskService.claim(task.getId());
     taskService.setTaskRead(task.getId(), true);
 
-    taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000006");
+    taskService.transfer(task.getId(), defaultWorkbasketSummary6.getId());
 
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask(task003.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -259,13 +537,13 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTaskToWorkbasket_When_WorkbasketKeyAndDomainIsProvided() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task task = taskService.getTask(task003.getId());
     taskService.claim(task.getId());
     taskService.setTaskRead(task.getId(), true);
 
     taskService.transfer(task.getId(), "USER-1-1", "DOMAIN_A");
 
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask(task003.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -275,7 +553,7 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void should_ChangeDomain_When_TransferringTaskToWorkbasketWithDifferentDomain() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000000");
+    Task task = taskService.getTask(task00.getId());
     String domain1 = task.getDomain();
 
     Task transferredTask = taskService.transfer(task.getId(), "GPK_B_KSC_1", "DOMAIN_B");
@@ -287,10 +565,10 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "user-1-1")
   @Test
   void should_ThrowException_When_UserHasNoTransferAuthorization() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
+    Task task = taskService.getTask(task001.getId());
 
     ThrowingCallable call =
-        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer(task.getId(), defaultWorkbasketSummary5.getId());
     assertThatThrownBy(call).isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
@@ -300,17 +578,16 @@ class TransferTaskAccTest {
   @Test
   void should_ThrowException_When_UserHasNoTransferAuthorizationAndIsMemeberOfTaskRouterRole()
       throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000001");
+    Task task = taskService.getTask(task001.getId());
 
-    assertThatThrownBy(
-            () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005"))
+    assertThatThrownBy(() -> taskService.transfer(task.getId(), defaultWorkbasketSummary5.getId()))
         .isInstanceOf(NotAuthorizedOnWorkbasketException.class);
   }
 
   @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_ThrowException_When_DestinationWorkbasketDoesNotExist() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task task = taskService.getTask(task003.getId());
     taskService.claim(task.getId());
     taskService.setTaskRead(task.getId(), true);
 
@@ -322,7 +599,7 @@ class TransferTaskAccTest {
   @Test
   void should_ThrowException_When_TaskToTransferDoesNotExist() {
     ThrowingCallable call =
-        () -> taskService.transfer("Invalid", "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer("Invalid", defaultWorkbasketSummary5.getId());
     assertThatThrownBy(call).isInstanceOf(TaskNotFoundException.class);
   }
 
@@ -330,42 +607,43 @@ class TransferTaskAccTest {
   @Test
   void should_ThrowException_When_TransferWithNoTransferAuthorization() {
     ThrowingCallable call =
-        () ->
-            taskService.transfer(
-                "TKI:200000000000000000000000000000000007",
-                "WBI:100000000000000000000000000000000001");
+        () -> taskService.transfer(task207.getId(), defaultWorkbasketSummary1.getId());
     assertThatThrownBy(call)
         .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
             "Not authorized. The current user 'teamlead-1' has no '[TRANSFER]' permission(s) "
-                + "for Workbasket 'WBI:100000000000000000000000000000000005'.");
+                + "for Workbasket '"
+                + defaultWorkbasketSummary5.getId()
+                + "'.");
   }
 
   @pro.taskana.testapi.security.WithAccessId(user = "user-1-1", groups = GROUP_1_DN)
   @Test
   void should_ThrowException_When_TransferWithNoAppendAuthorization() throws Exception {
-    Task task = taskService.getTask("TKI:000000000000000000000000000000000002");
+    Task task = taskService.getTask(task002.getId());
 
     ThrowingCallable call =
-        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000008");
+        () -> taskService.transfer(task.getId(), defaultWorkbasketSummary8.getId());
     assertThatThrownBy(call)
         .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .extracting(Throwable::getMessage)
         .asString()
         .startsWith(
             "Not authorized. The current user 'user-1-1' has no '[APPEND]' permission(s) "
-                + "for Workbasket 'WBI:100000000000000000000000000000000008'.");
+                + "for Workbasket '"
+                + defaultWorkbasketSummary8.getId()
+                + "'.");
   }
 
   @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1")
   @Test
   void should_ThrowException_When_TaskToTransferIsAlreadyCompleted() throws Exception {
-    Task task = taskService.getTask("TKI:100000000000000000000000000000000006");
+    Task task = taskService.getTask(task106.getId());
 
     ThrowingCallable call =
-        () -> taskService.transfer(task.getId(), "WBI:100000000000000000000000000000000005");
+        () -> taskService.transfer(task.getId(), defaultWorkbasketSummary5.getId());
     assertThatThrownBy(call).isInstanceOf(InvalidTaskStateException.class);
   }
 
@@ -373,17 +651,15 @@ class TransferTaskAccTest {
   @Test
   void should_BulkTransferTasks_When_WorkbasketIdIsProvided() throws Exception {
     final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-    List<String> taskIdList =
-        List.of(
-            "TKI:000000000000000000000000000000000004", "TKI:000000000000000000000000000000000005");
+    List<String> taskIdList = List.of(task004.getId(), task005.getId());
 
     BulkOperationResults<String, TaskanaException> results =
-        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
+        taskService.transferTasks(defaultWorkbasketSummary6.getId(), taskIdList);
     assertThat(results.containsErrors()).isFalse();
 
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("USER-1-1", "DOMAIN_A");
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000004");
+    Task transferredTask = taskService.getTask(task004.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -392,7 +668,7 @@ class TransferTaskAccTest {
     assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
-    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000005");
+    transferredTask = taskService.getTask(task005.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -413,33 +689,33 @@ class TransferTaskAccTest {
     // we can't use List.of because of the null value we insert
     List<String> taskIdList =
         Arrays.asList(
-            "TKI:000000000000000000000000000000000006", // working
-            "TKI:000000000000000000000000000000000041", // NotAuthorized READ
-            "TKI:000000000000000000000000000000000041", // NotAuthorized READ
-            "TKI:200000000000000000000000000000000008", // NotAuthorized TRANSFER
+            task006.getId(), // working
+            task041.getId(), // NotAuthorized READ
+            task041.getId(), // NotAuthorized READ
+            task208.getId(), // NotAuthorized TRANSFER
             "", // InvalidArgument
             null, // InvalidArgument
             "TKI:000000000000000000000000000000000099", // not existing
-            "TKI:100000000000000000000000000000000006"); // already completed
+            task106.getId()); // already completed
 
     BulkOperationResults<String, TaskanaException> results =
-        taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIdList);
+        taskService.transferTasks(defaultWorkbasketSummary6.getId(), taskIdList);
     // check for exceptions in bulk
     assertThat(results.containsErrors()).isTrue();
     assertThat(results.getErrorMap().values()).hasSize(6);
-    assertThat(results.getErrorForId("TKI:000000000000000000000000000000000041").getClass())
+    assertThat(results.getErrorForId(task041.getId()).getClass())
         .isEqualTo(NotAuthorizedOnWorkbasketException.class);
-    assertThat(results.getErrorForId("TKI:200000000000000000000000000000000008").getClass())
+    assertThat(results.getErrorForId(task208.getId()).getClass())
         .isEqualTo(NotAuthorizedOnWorkbasketException.class);
     assertThat(results.getErrorForId("TKI:000000000000000000000000000000000099").getClass())
         .isEqualTo(TaskNotFoundException.class);
-    assertThat(results.getErrorForId("TKI:100000000000000000000000000000000006").getClass())
+    assertThat(results.getErrorForId(task106.getId()).getClass())
         .isEqualTo(InvalidTaskStateException.class);
     assertThat(results.getErrorForId("").getClass()).isEqualTo(TaskNotFoundException.class);
     assertThat(results.getErrorForId(null).getClass()).isEqualTo(TaskNotFoundException.class);
 
     // verify valid requests
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000006");
+    Task transferredTask = taskService.getTask(task006.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -449,12 +725,12 @@ class TransferTaskAccTest {
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
 
-    transferredTask = taskService.getTask("TKI:200000000000000000000000000000000008");
+    transferredTask = taskService.getTask(task208.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
     assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TPK_VIP");
 
-    transferredTask = taskService.getTask("TKI:100000000000000000000000000000000006");
+    transferredTask = taskService.getTask(task106.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
     assertThat(transferredTask.getWorkbasketKey()).isEqualTo("TEAMLEAD-1");
@@ -466,11 +742,11 @@ class TransferTaskAccTest {
 
     List<String> taskIdList =
         List.of(
-            "TKI:000000000000000000000000000000000006", // working
-            "TKI:000000000000000000000000000000000041"); // NotAuthorized READ
+            task006.getId(), // working
+            task041.getId()); // NotAuthorized READ
 
     ThrowingCallable call =
-        () -> taskService.transferTasks("WBI:100000000000000000000000000000000010", taskIdList);
+        () -> taskService.transferTasks(defaultWorkbasketSummary10.getId(), taskIdList);
     assertThatThrownBy(call)
         .isInstanceOf(NotAuthorizedOnWorkbasketException.class)
         .hasMessageContaining("APPEND");
@@ -479,10 +755,10 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "teamlead-1", groups = GROUP_1_DN)
   @Test
   void should_TransferTasks_When_TransferringTasksWithListNotSupportingRemove() {
-    List<String> taskIds = List.of("TKI:000000000000000000000000000000000006");
+    List<String> taskIds = List.of(task006.getId());
 
     ThrowingCallable call =
-        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", taskIds);
+        () -> taskService.transferTasks(defaultWorkbasketSummary6.getId(), taskIds);
 
     assertThatCode(call).doesNotThrowAnyException();
   }
@@ -491,7 +767,7 @@ class TransferTaskAccTest {
   @Test
   void should_ThrowException_When_TransferredTaskListIsNull() {
     ThrowingCallable call =
-        () -> taskService.transferTasks("WBI:100000000000000000000000000000000006", null);
+        () -> taskService.transferTasks(defaultWorkbasketSummary6.getId(), null);
     assertThatThrownBy(call)
         .isInstanceOf(InvalidArgumentException.class)
         .hasMessage("TaskIds must not be null or empty.");
@@ -501,9 +777,7 @@ class TransferTaskAccTest {
   @Test
   void should_ThrowException_When_TransferringEmptyTaskIdList() {
     ThrowingCallable call =
-        () ->
-            taskService.transferTasks(
-                "WBI:100000000000000000000000000000000006", Collections.emptyList());
+        () -> taskService.transferTasks(defaultWorkbasketSummary6.getId(), Collections.emptyList());
     assertThatThrownBy(call).isInstanceOf(InvalidArgumentException.class);
   }
 
@@ -511,9 +785,7 @@ class TransferTaskAccTest {
   @Test
   void should_BulkTransferTasks_When_WorkbasketKeyAndDomainIsProvided() throws Exception {
     final Instant before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-    List<String> taskIdList =
-        List.of(
-            "TKI:000000000000000000000000000000000023", "TKI:000000000000000000000000000000000024");
+    List<String> taskIdList = List.of(task023.getId(), task024.getId());
 
     BulkOperationResults<String, TaskanaException> results =
         taskService.transferTasks("GPK_B_KSC_1", "DOMAIN_B", taskIdList);
@@ -521,7 +793,7 @@ class TransferTaskAccTest {
 
     final Workbasket wb =
         taskanaEngine.getWorkbasketService().getWorkbasket("GPK_B_KSC_1", "DOMAIN_B");
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000023");
+    Task transferredTask = taskService.getTask(task023.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -530,7 +802,7 @@ class TransferTaskAccTest {
     assertThat(transferredTask.getDomain()).isEqualTo(wb.getDomain());
     assertThat(transferredTask.getModified().isBefore(before)).isFalse();
     assertThat(transferredTask.getOwner()).isNull();
-    transferredTask = taskService.getTask("TKI:000000000000000000000000000000000024");
+    transferredTask = taskService.getTask(task024.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isTrue();
     assertThat(transferredTask.isRead()).isFalse();
@@ -544,12 +816,9 @@ class TransferTaskAccTest {
   @pro.taskana.testapi.security.WithAccessId(user = "admin")
   @Test
   void should_NotSetTheTransferFlag_When_SetTransferFlagNotRequested() throws Exception {
-    taskService.transfer(
-        "TKI:000000000000000000000000000000000003",
-        "WBI:100000000000000000000000000000000006",
-        false);
+    taskService.transfer(task003.getId(), defaultWorkbasketSummary6.getId(), false);
 
-    Task transferredTask = taskService.getTask("TKI:000000000000000000000000000000000003");
+    Task transferredTask = taskService.getTask(task003.getId());
     assertThat(transferredTask).isNotNull();
     assertThat(transferredTask.isTransferred()).isFalse();
   }
@@ -559,20 +828,14 @@ class TransferTaskAccTest {
   void should_NotSetTheTransferFlagWithinBulkTransfer_When_SetTransferFlagNotRequested()
       throws Exception {
     taskService.transferTasks(
-        "WBI:100000000000000000000000000000000006",
-        List.of(
-            "TKI:000000000000000000000000000000000003",
-            "TKI:000000000000000000000000000000000004",
-            "TKI:000000000000000000000000000000000005"),
+        defaultWorkbasketSummary6.getId(),
+        List.of(task003.getId(), task004.getId(), task005.getId()),
         false);
 
     List<TaskSummary> transferredTasks =
         taskService
             .createTaskQuery()
-            .idIn(
-                "TKI:000000000000000000000000000000000004",
-                "TKI:000000000000000000000000000000000005",
-                "TKI:000000000000000000000000000000000003")
+            .idIn(task004.getId(), task005.getId(), task003.getId())
             .list();
 
     assertThat(transferredTasks).extracting(TaskSummary::isTransferred).containsOnly(false);
