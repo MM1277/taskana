@@ -252,7 +252,6 @@ class TransferTaskAccTest {
         .permission(WorkbasketPermission.OPEN)
         .permission(WorkbasketPermission.READ)
         .permission(WorkbasketPermission.READTASKS)
-        .permission(WorkbasketPermission.TRANSFER)
         .permission(WorkbasketPermission.EDITTASKS)
         .buildAndStore(workbasketService);
 
