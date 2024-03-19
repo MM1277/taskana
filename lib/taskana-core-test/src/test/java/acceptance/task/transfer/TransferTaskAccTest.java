@@ -66,7 +66,7 @@ class TransferTaskAccTest {
   WorkbasketSummary defaultWorkbasketSummary6;
   WorkbasketSummary defaultWorkbasketSummary7;
 
-  static final String GROUP_1_DN =
+  private static final String GROUP_1_DN =
       "cn=Organisationseinheit KSC 1,cn=Organisationseinheit KSC,cn=organisation,OU=Test,O=TASKANA";
 
   @pro.taskana.testapi.security.WithAccessId(user = "admin")
