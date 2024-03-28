@@ -27,6 +27,7 @@ import pro.taskana.common.test.security.WithAccessId;
 import pro.taskana.task.api.TaskService;
 import pro.taskana.task.api.exceptions.TaskNotFoundException;
 import pro.taskana.task.api.models.Task;
+import pro.taskana.task.internal.models.TaskImpl;
 import pro.taskana.workbasket.api.exceptions.NotAuthorizedOnWorkbasketException;
 
 @ExtendWith(JaasExtension.class)
@@ -160,7 +161,8 @@ public class ServiceLevelPriorityWithWorkingDaysCalculationAccTest extends Abstr
         createObjectReference("COMPANY_A", "SYSTEM_A", "INSTANCE_A", "VNR", "1234567"));
     newTask.setOwner("user-1-1");
     newTask.setPlanned(planned);
-    Task createdTask = taskService.createTask(newTask);
+    TaskImpl createdTask = (TaskImpl) taskService.createTask(newTask);
+    createdTask.setCreated(now);
 
     assertThat(createdTask).isNotNull();
     assertThat(createdTask.getPlanned()).isEqualTo(planned);
