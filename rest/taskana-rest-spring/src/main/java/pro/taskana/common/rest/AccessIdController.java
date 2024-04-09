@@ -37,15 +37,15 @@ public class AccessIdController {
    * @throws InvalidArgumentException if the provided search for Access Id is shorter than the
    *     configured one.
    * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
-   * @title Search for Access Id (users and groups)
+   * @title Search for Access Id (users and groups and permissions)
    */
   @GetMapping(path = RestEndpoints.URL_ACCESS_ID)
-  public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroups(
+  public ResponseEntity<List<AccessIdRepresentationModel>> searchUsersAndGroupsAndPermissions(
       @RequestParam("search-for") String searchFor)
       throws InvalidArgumentException, NotAuthorizedException {
     taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
 
-    List<AccessIdRepresentationModel> accessIdUsers = ldapClient.searchUsersAndGroups(searchFor);
+    List<AccessIdRepresentationModel> accessIdUsers = ldapClient.searchUsersAndGroupsAndPermissions(searchFor);
     return ResponseEntity.ok(accessIdUsers);
   }
 
@@ -98,6 +98,27 @@ public class AccessIdController {
 
     List<AccessIdRepresentationModel> accessIds =
         ldapClient.searchGroupsAccessIdIsMemberOf(accessId);
+
+    return ResponseEntity.ok(accessIds);
+  }
+
+  /**
+   * This endpoint retrieves all permissions a given Access Id belongs to.
+   *
+   * @param accessId the Access Id whose permissions should be determined.
+   * @return a list of the permission Access Ids the requested Access Id belongs to
+   * @throws InvalidArgumentException if the requested Access Id does not exist or is not unique.
+   * @throws NotAuthorizedException if the current user is not ADMIN or BUSINESS_ADMIN.
+   * @title Get permissions for Access Id
+   */
+  @GetMapping(path = RestEndpoints.URL_ACCESS_ID_PERMISSIONS)
+  public ResponseEntity<List<AccessIdRepresentationModel>> getPermissionsByAccessId(
+      @RequestParam("access-id") String accessId)
+      throws InvalidArgumentException, NotAuthorizedException {
+    taskanaEngine.checkRoleMembership(TaskanaRole.ADMIN, TaskanaRole.BUSINESS_ADMIN);
+
+    List<AccessIdRepresentationModel> accessIds =
+        ldapClient.searchPermissionsAccessIdIsMemberOf(accessId);
 
     return ResponseEntity.ok(accessIds);
   }

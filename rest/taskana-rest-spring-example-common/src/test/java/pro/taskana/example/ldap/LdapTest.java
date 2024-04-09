@@ -21,7 +21,7 @@ class LdapTest {
 
   @Test
   void should_FindAllUsersAndGroup_When_SearchWithSubstringOfName() throws Exception {
-    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("lead");
+    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroupsAndPermissions("lead");
     assertThat(usersAndGroups)
         .extracting(AccessIdRepresentationModel::getAccessId)
         .containsExactlyInAnyOrder(
@@ -30,10 +30,10 @@ class LdapTest {
 
   @Test
   void should_FindUser_When_SearchingWithFirstAndLastname() throws Exception {
-    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroups("Elena");
+    List<AccessIdRepresentationModel> usersAndGroups = ldapClient.searchUsersAndGroupsAndPermissions("Elena");
     assertThat(usersAndGroups).hasSize(2);
 
-    usersAndGroups = ldapClient.searchUsersAndGroups("Elena Faul");
+    usersAndGroups = ldapClient.searchUsersAndGroupsAndPermissions("Elena Faul");
     assertThat(usersAndGroups).hasSize(1);
   }
 

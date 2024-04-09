@@ -11,6 +11,11 @@ cn: groups
 objectclass: top
 objectclass: container
 
+dn: cn=permissions,OU=Test,O=TASKANA
+cn: groups
+objectclass: top
+objectclass: container
+
 dn: cn=users,OU=Test,O=TASKANA
 cn: users
 objectclass: top

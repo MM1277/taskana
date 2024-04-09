@@ -57,6 +57,17 @@ class LdapClientTest {
   }
 
   @Test
+  void should_SearchPermissionByDn_For_LdapCall() {
+    setUpEnvMock();
+    cut.init();
+
+    cut.searchAccessIdByDn("cn=developerspermission,ou=permissions,o=taskanatest");
+
+    verify(ldapTemplate)
+        .lookup(eq("cn=developerspermission,ou=permissions"), any(), any(LdapClient.DnContextMapper.class));
+  }
+
+  @Test
   void should_ConvertAccessIdToLowercase_When_SearchingGroupByDn() {
     setUpEnvMock();
     cut.init();
@@ -68,14 +79,29 @@ class LdapClientTest {
   }
 
   @Test
-  void testLdap_searchUsersAndGroups() throws Exception {
+  void should_ConvertAccessIdToLowercase_When_SearchingPermissionByDn() {
+    setUpEnvMock();
+    cut.init();
+
+    cut.searchAccessIdByDn("cn=DevelopersPermission,ou=permissions,o=taskanatest");
+
+    verify(ldapTemplate)
+        .lookup(eq("cn=developerspermission,ou=permissions"), any(), any(LdapClient.DnContextMapper.class));
+  }
+
+  @Test
+  void testLdap_searchUsersAndGroupsAndPermissions() throws Exception {
 
     setUpEnvMock();
     cut.init();
 
+    AccessIdRepresentationModel permission = new AccessIdRepresentationModel("testP", "testPId");
     AccessIdRepresentationModel group = new AccessIdRepresentationModel("testG", "testGId");
     AccessIdRepresentationModel user = new AccessIdRepresentationModel("testU", "testUId");
 
+    when(ldapTemplate.search(
+        any(String.class), any(), anyInt(), any(), any(LdapClient.PermissionContextMapper.class)))
+        .thenReturn(List.of(permission));
     when(ldapTemplate.search(
             any(String.class), any(), anyInt(), any(), any(LdapClient.GroupContextMapper.class)))
         .thenReturn(List.of(group));
@@ -83,7 +109,9 @@ class LdapClientTest {
             any(String.class), any(), anyInt(), any(), any(LdapClient.UserContextMapper.class)))
         .thenReturn(List.of(user));
 
-    assertThat(cut.searchUsersAndGroups("test")).hasSize(2).containsExactlyInAnyOrder(user, group);
+    assertThat(cut.searchUsersAndGroupsAndPermissions("test"))
+        .hasSize(3)
+        .containsExactlyInAnyOrder(user, group, permission);
   }
 
   @Test
@@ -105,7 +133,7 @@ class LdapClientTest {
   }
 
   @Test
-  void should_ReturnAllUsersAndMembersOfGroupsWithTaskanaUserRole() throws Exception {
+  void should_ReturnAllUsersAndMembersOfGroupsAndMemberOfPermissionsWithTaskanaUserRole() {
 
     setUpEnvMock();
     cut.init();
@@ -115,6 +143,8 @@ class LdapClientTest {
     Set<String> groupsOfUserRole = new HashSet<>();
     Map<TaskanaRole, Set<String>> roleMap = new HashMap<>();
     roleMap.put(TaskanaRole.USER, groupsOfUserRole);
+    Set<String> permissionsOfUserRole = new HashSet<>();
+    roleMap.put(TaskanaRole.USER, permissionsOfUserRole);
 
     when(taskanaConfiguration.getRoleMap()).thenReturn(roleMap);
 
@@ -126,7 +156,7 @@ class LdapClientTest {
   }
 
   @Test
-  void testLdap_getNameWithoutBaseDn() {
+  void testLdap_getNameWithoutBaseDnForGroup() {
 
     setUpEnvMock();
     cut.init();
@@ -135,11 +165,21 @@ class LdapClientTest {
   }
 
   @Test
+  void testLdap_getNameWithoutBaseDnForPermission() {
+
+    setUpEnvMock();
+    cut.init();
+    assertThat(cut.getNameWithoutBaseDn("cn=developerspermission,ou=permissions,o=taskanatest"))
+        .isEqualTo("cn=developerspermission,ou=permissions");
+  }
+
+  @Test
   void shouldNot_CreateOrCriteriaWithDnAndAccessIdString_When_PropertyTypeIsSet()
       throws InvalidArgumentException {
 
     setUpEnvMock();
     lenient().when(this.environment.getProperty("taskana.ldap.groupsOfUser.type")).thenReturn("dn");
+    lenient().when(this.environment.getProperty("taskana.ldap.permissionsOfUser.type")).thenReturn("dn");
     lenient()
         .when(
             ldapTemplate.search(
@@ -153,16 +193,27 @@ class LdapClientTest {
     cut.init();
 
     cut.searchGroupsAccessIdIsMemberOf("user-1-1");
+    cut.searchPermissionsAccessIdIsMemberOf("user-1-1");
 
-    String expectedFilterValue =
+    String expectedFilterValueForGroup =
         "(&(objectclass=groupOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA))";
     verify(ldapTemplate)
         .search(
             any(String.class),
-            eq(expectedFilterValue),
+            eq(expectedFilterValueForGroup),
             anyInt(),
             any(),
             any(LdapClient.GroupContextMapper.class));
+
+    String expectedFilterValueForPermission =
+        "(&(objectclass=permissionOfUniqueNames)(memberUid=uid=user-1-1,cn=users,OU=Test,O=TASKANA))";
+    verify(ldapTemplate)
+        .search(
+            any(String.class),
+            eq(expectedFilterValueForPermission),
+            anyInt(),
+            any(),
+            any(LdapClient.PermissionContextMapper.class));
   }
 
   @Test
@@ -193,7 +244,7 @@ class LdapClientTest {
     // userMobilePhoneAttribute, userEmailAttribute, userOrglevel1Attribute, userOrglevel2Attribute,
     // userOrglevel3Attribute, userOrglevel4Attribute, groupsOfUser, groupsOfUserName,
     // groupOfUserType
-    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 12);
+    assertThat(cut.checkForMissingConfigurations()).hasSize(LdapSettings.values().length - 15);
   }
 
   @Test
@@ -231,7 +282,13 @@ class LdapClientTest {
               {"taskana.ldap.userOrglevel1Attribute", "orgLevel1"},
               {"taskana.ldap.userOrglevel2Attribute", "orgLevel2"},
               {"taskana.ldap.userOrglevel3Attribute", "orgLevel3"},
-              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"}
+              {"taskana.ldap.userOrglevel4Attribute", "orgLevel4"},
+                {"taskana.ldap.permissionsOfUser", "memberUid"},
+                {"taskana.ldap.permissionNameAttribute", "cn"},
+                {"taskana.ldap.permissionSearchFilterValue", "permissionOfUniqueNames"},
+                {"taskana.ldap.permissionSearchFilterName", "objectclass"},
+                {"taskana.ldap.permissionSearchBase", "ou=permissions"},
+                {"taskana.ldap.userMemberOfPermissionAttribute", "memberOf"},
             })
         .forEach(
             strings ->

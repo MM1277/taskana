@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
@@ -62,14 +63,14 @@ public class LdapClient {
   }
 
   /**
-   * Search LDAP for matching users or groups.
+   * Search LDAP for matching users or groups or permissions.
    *
-   * @param name lookup string for names or groups
+   * @param name lookup string for names or groups or permissions
    * @return a list of AccessIdResources sorted by AccessId and limited to
    *     maxNumberOfReturnedAccessIds
    * @throws InvalidArgumentException if input is shorter than minSearchForLength
    */
-  public List<AccessIdRepresentationModel> searchUsersAndGroups(final String name)
+  public List<AccessIdRepresentationModel> searchUsersAndGroupsAndPermissions (final String name)
       throws InvalidArgumentException {
     isInitOrFail();
     testMinSearchForLength(name);
@@ -83,6 +84,7 @@ public class LdapClient {
     } else {
       accessIds.addAll(searchUsersByNameOrAccessId(name));
       accessIds.addAll(searchGroupsByName(name));
+      accessIds.addAll(searchPermissionsByName(name));
     }
     sortListOfAccessIdResources(accessIds);
     return getFirstPageOfaResultList(accessIds);
@@ -226,6 +228,30 @@ public class LdapClient {
         new GroupContextMapper());
   }
 
+  public List<AccessIdRepresentationModel> searchPermissionsByName(final String name)
+      throws InvalidArgumentException {
+    isInitOrFail();
+    testMinSearchForLength(name);
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    orFilter.or(new WhitespaceWildcardsFilter(getPermissionNameAttribute(), name));
+    if (!CN.equals(getPermissionNameAttribute())) {
+      orFilter.or(new WhitespaceWildcardsFilter(CN, name));
+    }
+    andFilter.and(orFilter);
+
+    LOGGER.debug("Using filter '{}' for LDAP query.", andFilter);
+
+    return ldapTemplate.search(
+        getPermissionSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        getLookUpPermissionAttributesToReturn(),
+        new PermissionContextMapper());
+  }
+
   public AccessIdRepresentationModel searchAccessIdByDn(final String dn) {
     isInitOrFail();
     // Obviously Spring LdapTemplate does have a inconsistency and always adds the base name to the
@@ -239,7 +265,7 @@ public class LdapClient {
           "Removed baseDN {} from given DN. New DN to be used: {}", getBaseDn(), nameWithoutBaseDn);
     }
     return ldapTemplate.lookup(
-        nameWithoutBaseDn, getLookUpUserAndGroupAttributesToReturn(), new DnContextMapper());
+        nameWithoutBaseDn, getLookUpUserAndGroupAndPermissionAttributesToReturn(), new DnContextMapper());
   }
 
   public List<AccessIdRepresentationModel> searchGroupsAccessIdIsMemberOf(final String accessId)
@@ -275,6 +301,41 @@ public class LdapClient {
         SearchControls.SUBTREE_SCOPE,
         userAttributesToReturn,
         new GroupContextMapper());
+  }
+
+  public List<AccessIdRepresentationModel> searchPermissionsAccessIdIsMemberOf(final String accessId)
+      throws InvalidArgumentException {
+    isInitOrFail();
+    testMinSearchForLength(accessId);
+
+    String dn = searchDnForAccessId(accessId);
+    if (dn == null || dn.isEmpty()) {
+      throw new InvalidArgumentException("The AccessId is invalid");
+    }
+
+    final AndFilter andFilter = new AndFilter();
+    andFilter.and(new EqualsFilter(getPermissionSearchFilterName(), getPermissionSearchFilterValue()));
+    final OrFilter orFilter = new OrFilter();
+    if (!"DN".equalsIgnoreCase(getPermissionsOfUserType())) {
+      orFilter.or(new EqualsFilter(getPermissionsOfUserName(), accessId));
+    }
+    orFilter.or(new EqualsFilter(getPermissionsOfUserName(), dn));
+    andFilter.and(orFilter);
+
+    String[] userAttributesToReturn = {getUserIdAttribute(), getPermissionNameAttribute()};
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug(
+          "Using filter '{}' for LDAP query with group search base {}.",
+          andFilter,
+          getPermissionSearchBase());
+    }
+
+    return ldapTemplate.search(
+        getPermissionSearchBase(),
+        andFilter.encode(),
+        SearchControls.SUBTREE_SCOPE,
+        userAttributesToReturn,
+        new PermissionContextMapper());
   }
 
   /**
@@ -417,6 +478,22 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_USER_PERMISSIONS_ATTRIBUTE.getValueFromEnv(env);
   }
 
+  public String getPermissionSearchBase() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_BASE.getValueFromEnv(env);
+  }
+
+  public String getPermissionSearchFilterName() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_FILTER_NAME.getValueFromEnv(env);
+  }
+
+  public String getPermissionSearchFilterValue() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_SEARCH_FILTER_VALUE.getValueFromEnv(env);
+  }
+
+  public String getPermissionNameAttribute() {
+    return LdapSettings.TASKANA_LDAP_PERMISSION_NAME_ATTRIBUTE.getValueFromEnv(env);
+  }
+
   public String getGroupSearchBase() {
     return LdapSettings.TASKANA_LDAP_GROUP_SEARCH_BASE.getValueFromEnv(env);
   }
@@ -474,6 +551,18 @@ public class LdapClient {
     return LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE.getValueFromEnv(env);
   }
 
+  public String getPermissionsOfUserName() {
+    String permissionsOfUser = LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_NAME.getValueFromEnv(env);
+    if (permissionsOfUser == null || permissionsOfUser.isEmpty()) {
+      permissionsOfUser = LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER.getValueFromEnv(env);
+    }
+    return permissionsOfUser;
+  }
+
+  public String getPermissionsOfUserType() {
+    return LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_TYPE.getValueFromEnv(env);
+  }
+
   public boolean isUser(String accessId) {
     return !getUsersByAccessId(accessId).isEmpty();
   }
@@ -522,10 +611,19 @@ public class LdapClient {
     return new String[] {getGroupNameAttribute(), CN, getGroupSearchFilterName()};
   }
 
-  String[] getLookUpUserAndGroupAttributesToReturn() {
-    return Stream.concat(
+  String[] getLookUpPermissionAttributesToReturn() {
+    if (CN.equals(getPermissionNameAttribute())) {
+      return new String[] {CN, getPermissionSearchFilterName()};
+    }
+    return new String[] {getPermissionNameAttribute(), CN, getPermissionSearchFilterName()};
+  }
+
+  String[] getLookUpUserAndGroupAndPermissionAttributesToReturn() {
+    return Stream.concat(Stream.concat(
             Arrays.stream(getLookUpUserAttributesToReturn()),
-            Arrays.stream(getLookUpGroupAttributesToReturn()))
+            Arrays.stream(getLookUpGroupAttributesToReturn())),
+          Arrays.stream(getLookUpPermissionAttributesToReturn())
+        )
         .toArray(String[]::new);
   }
 
@@ -587,6 +685,9 @@ public class LdapClient {
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER::equals))
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_NAME::equals))
         .filter(not(LdapSettings.TASKANA_LDAP_GROUPS_OF_USER_TYPE::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_NAME::equals))
+        .filter(not(LdapSettings.TASKANA_LDAP_PERMISSIONS_OF_USER_TYPE::equals))
         .filter(p -> p.getValueFromEnv(env) == null)
         .toList();
   }
@@ -657,6 +758,17 @@ public class LdapClient {
       final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
       accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
       accessId.setName(context.getStringAttribute(getGroupNameAttribute()));
+      return accessId;
+    }
+  }
+
+  class PermissionContextMapper extends AbstractContextMapper<AccessIdRepresentationModel> {
+
+    @Override
+    public AccessIdRepresentationModel doMapFromContext(final DirContextOperations context) {
+      final AccessIdRepresentationModel accessId = new AccessIdRepresentationModel();
+      accessId.setAccessId(getDnFromContext(context)); // fully qualified dn
+      accessId.setName(context.getStringAttribute(getPermissionNameAttribute()));
       return accessId;
     }
   }

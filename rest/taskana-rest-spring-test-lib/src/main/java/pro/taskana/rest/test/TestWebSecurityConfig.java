@@ -41,6 +41,8 @@ public class TestWebSecurityConfig {
   private final String ldapUserDnPatterns;
   private final String ldapGroupSearchBase;
   private final String ldapGroupSearchFilter;
+  private final String ldapPermissionSearchBase;
+  private final String ldapPermissionSearchFilter;
 
   @Autowired
   public TestWebSecurityConfig(
@@ -48,12 +50,16 @@ public class TestWebSecurityConfig {
       @Value("${taskana.ldap.baseDn:OU=Test,O=TASKANA}") String ldapBaseDn,
       @Value("${taskana.ldap.userDnPatterns:uid={0},cn=users}") String ldapUserDnPatterns,
       @Value("${taskana.ldap.groupSearchBase:cn=groups}") String ldapGroupSearchBase,
-      @Value("${taskana.ldap.groupSearchFilter:uniqueMember={0}}") String ldapGroupSearchFilter) {
+      @Value("${taskana.ldap.groupSearchFilter:uniqueMember={0}}") String ldapGroupSearchFilter,
+      @Value("${taskana.ldap.permissionSearchBase:cn=permissions}") String ldapPermissionSearchBase,
+      @Value("${taskana.ldap.permissionSearchFilter:uniqueMember={0}}") String ldapPermissionSearchFilter) {
     this.ldapServerUrl = ldapServerUrl;
     this.ldapBaseDn = ldapBaseDn;
     this.ldapUserDnPatterns = ldapUserDnPatterns;
     this.ldapGroupSearchBase = ldapGroupSearchBase;
     this.ldapGroupSearchFilter = ldapGroupSearchFilter;
+    this.ldapPermissionSearchBase = ldapPermissionSearchBase;
+    this.ldapPermissionSearchFilter = ldapPermissionSearchFilter;
   }
 
   @Bean
